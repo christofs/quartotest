@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Keli Du">
+<meta name="author" content="Julia Dudar">
+<meta name="author" content="Christof Schöch">
+<meta name="dcterms.date" content="2022-11-27">
+
+<title>Evaluating Measures of Distinctiveness. Or, Testing Quarto for JCLS</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+<script src="testing-quarto_files/libs/clipboard/clipboard.min.js"></script>
+<script src="testing-quarto_files/libs/quarto-html/quarto.js"></script>
+<script src="testing-quarto_files/libs/quarto-html/popper.min.js"></script>
+<script src="testing-quarto_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="testing-quarto_files/libs/quarto-html/anchor.min.js"></script>
+<link href="testing-quarto_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="testing-quarto_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="testing-quarto_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="testing-quarto_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="testing-quarto_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#abstract" id="toc-abstract" class="nav-link active" data-scroll-target="#abstract"><span class="toc-section-number">1</span>  Abstract</a></li>
+  <li><a href="#introduction-labelsec01" id="toc-introduction-labelsec01" class="nav-link" data-scroll-target="#introduction-labelsec01"><span class="toc-section-number">2</span>  Introduction <code>\label{sec:01}</code></a>
+  <ul class="collapse">
+  <li><a href="#sec-02" id="toc-sec-02" class="nav-link" data-scroll-target="#sec-02"><span class="toc-section-number">2.1</span>  Related Work</a>
+  <ul class="collapse">
+  <li><a href="#measures-of-distinctiveness" id="toc-measures-of-distinctiveness" class="nav-link" data-scroll-target="#measures-of-distinctiveness"><span class="toc-section-number">2.1.1</span>  Measures of distinctiveness</a></li>
+  </ul></li>
+  <li><a href="#sec-03" id="toc-sec-03" class="nav-link" data-scroll-target="#sec-03"><span class="toc-section-number">2.2</span>  Corpora</a></li>
+  <li><a href="#sec-04" id="toc-sec-04" class="nav-link" data-scroll-target="#sec-04"><span class="toc-section-number">2.3</span>  Results</a>
+  <ul class="collapse">
+  <li><a href="#sec-04-1" id="toc-sec-04-1" class="nav-link" data-scroll-target="#sec-04-1"><span class="toc-section-number">2.3.1</span>  Classification of French Popular Novel Collections (1980s and 1990s) – static</a></li>
+  <li><a href="#sec-04-2" id="toc-sec-04-2" class="nav-link" data-scroll-target="#sec-04-2"><span class="toc-section-number">2.3.2</span>  Classification of French Popular Novel Collections (1980s and 1990s) – dynamic</a></li>
+  </ul></li>
+  <li><a href="#sec-05" id="toc-sec-05" class="nav-link" data-scroll-target="#sec-05"><span class="toc-section-number">2.4</span>  Multilingual Setting</a></li>
+  <li><a href="#sec-06" id="toc-sec-06" class="nav-link" data-scroll-target="#sec-06"><span class="toc-section-number">2.5</span>  Conclusion</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="toc-section-number">3</span>  References</a></li>
+  <li><a href="#appendix-a-demo-code-from-quarto" id="toc-appendix-a-demo-code-from-quarto" class="nav-link" data-scroll-target="#appendix-a-demo-code-from-quarto"><span class="toc-section-number">4</span>  Appendix A: Demo code from Quarto</a>
+  <ul class="collapse">
+  <li><a href="#the-equations-example" id="toc-the-equations-example" class="nav-link" data-scroll-target="#the-equations-example"><span class="toc-section-number">4.1</span>  The equations example</a></li>
+  <li><a href="#the-polar-axis-example" id="toc-the-polar-axis-example" class="nav-link" data-scroll-target="#the-polar-axis-example"><span class="toc-section-number">4.2</span>  The polar axis example</a></li>
+  </ul></li>
+  <li><a href="#appendix-b-general-remarks-about-this-test" id="toc-appendix-b-general-remarks-about-this-test" class="nav-link" data-scroll-target="#appendix-b-general-remarks-about-this-test"><span class="toc-section-number">5</span>  Appendix B: General remarks about this test</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Evaluating Measures of Distinctiveness. Or, Testing Quarto for JCLS</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Keli Du </p>
+             <p>Julia Dudar </p>
+             <p>Christof Schöch <a href="https://orcid.org/https://orcid.org/0000-0002-4557-2753" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 27, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="abstract" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Abstract</h1>
+<p>This paper concerns an empirical evaluation of nine different measures of distinctiveness or ‘keyness’ in the context of Computational Literary Studies. We use nine different sets of literary texts (specifically, novels) written in seven different languages as a basis for this evaluation. The evaluation is performed as a downstream classification task, where segments of the novels need to be classified by subgenre or period of first publication. The classifier receives different numbers of features identified using different measures of distinctiveness. The main contribution of our paper is that we can show that across a wide variety of parameters, but especially when only a small number of features is used, (more recent) dispersion-based measures very often outperform other (more established) frequency-based measures by significant margins. Our findings support an emerging trend to consider dispersion as an important property of words in addition to frequency.</p>
+</section>
+<section id="introduction-labelsec01" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Introduction <code>\label{sec:01}</code></h1>
+<p>Edward Tufte, the pioneer of data visualization, famously wrote: “At the heart of quantitative reasoning is a single question: Compared to what?” <span class="citation" data-cites="tufte_envisioning_1990">(<a href="#ref-tufte_envisioning_1990" role="doc-biblioref">Tufte 1990, 67</a>)</span>. And indeed, any number or value established in some way can only really be endowed with meaning when it is placed in the context of other, comparable numbers or values. One may think of several fundamental strategies for such a contextualization of numbers. Taking the same measurement at different times is one such strategy and taking the same measurement in different subsets of a dataset is another. Each of these strategies comes with typical statistical operations for the comparison of the values, such as regression to determine a trend over time or a test of statistical significance to compare the distributions of values in two subsets of a dataset <span class="citation" data-cites="diez_openintro_2019">(<a href="#ref-diez_openintro_2019" role="doc-biblioref">Diez, Cetinkaya-Rundel, and Barr 2019</a>)</span>.</p>
+<p>What the above observation points to is that comparison is a fundamental operation in many domains operating with numerical values. This is also true, however, for many text-based domains of research, whether statistically-oriented or not <span class="citation" data-cites="klimek_vergleich_2015">(<a href="#ref-klimek_vergleich_2015" role="doc-biblioref">Klimek and Müller 2015</a>)</span>. The research we report on here brings both strands together in the sense that it is located at the intersection of literary studies and statistics. More precisely, our research is concerned with modeling, implementing, evaluating and using statistical measures of comparison of two or several groups of texts. The measures we focus on are used to identify characteristic or distinctive features of each group of texts in order to gain an evidence-based understanding of the specific contents, style and/or structure of these groups of texts. As we describe below, such measures have been developed in domains such as Information Retrieval (IR), Corpus and Computational Linguistics (CL), or Computational Literary Studies (CLS). In our research, we bring together knowledge and insight from these domains with the general objective of fostering a better understanding of measures of distinctiveness.</p>
+<p>The research we report on in this contribution is set in the wider context of our research into measures of distinctiveness for comparison of groups of texts. Previously, we have worked on the issue of qualitative validation of measures of distinctiveness (see <span class="citation" data-cites="schroter_keyness_2021">(<a href="#ref-schroter_keyness_2021" role="doc-biblioref">Schröter et al. 2021</a>)</span>. We have also implemented a wide range of measures of distinctiveness in our Python package <em>pydistinto</em>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> With the current contribution, we focus on the step of evaluating the performance of a substantial range of such measures using a downstream classification task.</p>
+<p>Our paper is structured as follows: First, we summarize related work (a) describing different measures of distinctiveness and (b) specifically comparing several measures of distinctiveness to each other (<a href="#sec-02">Section&nbsp;2.1</a>). We go on to describe the different corpora we have used for our study (<a href="#sec-03">Section&nbsp;2.2</a>) as well as the methods used to perform the evaluation task and to analyze the results (<a href="#sec-04">Section&nbsp;2.3</a>). We then discuss the results we have obtained, first in a single-language setting, then in a multi-language setting (<a href="#sec-05">Section&nbsp;2.4</a>). We close our contribution by summarizing our key findings and describing possible future work (<a href="#sec-06">Section&nbsp;2.5</a>).</p>
+<section id="sec-02" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-02"><span class="header-section-number">2.1</span> Related Work</h2>
+<section id="measures-of-distinctiveness" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="measures-of-distinctiveness"><span class="header-section-number">2.1.1</span> Measures of distinctiveness</h3>
+</section>
+</section>
+<section id="sec-03" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-03"><span class="header-section-number">2.2</span> Corpora</h2>
+<p>For our analysis we used nine text collections. The first two corpora consist of contemporary popular novels in French published between 1980 and 1999 (160 novels published in the 1980s and 160 novels published in the 1990s). To enable the comparison and classification of texts, we designed these custom-built corpora in a way that they contain the same number of novels for each of four subgroups: highbrow novels on the one hand, and lowbrow novels of three subgenres (sentimental novels, crime fiction and science fiction) on the other. The texts in these corpora are, for obvious reasons, still protected by copyright. As a consequence, we cannot make these corpora freely available as full texts. We have published them, however, in the form of a so-called ``derived text format” (<span class="citation" data-cites="schoch_abgeleitete_2020">Schöch et al. (<a href="#ref-schoch_abgeleitete_2020" role="doc-biblioref">2020</a>)</span>, <span class="citation" data-cites="organisciak_research_2021">Organisciak and Downie (<a href="#ref-organisciak_research_2021" role="doc-biblioref">2021</a>)</span>) suitable for use with our Python library and devoid of any copyright protection.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>Another group of text corpora that we used for our analysis consists of seven collections of novels in seven different European languages taken from the (ELTeC) produced in the COST Action <em>Distant Reading for European Literary History</em> (see <span class="citation" data-cites="burnard_search_2021">Burnard, Schöch, and Odebrecht (<a href="#ref-burnard_search_2021" role="doc-biblioref">2021</a>)</span>; <span class="citation" data-cites="schoch_creating_2021">Schöch et al. (<a href="#ref-schoch_creating_2021" role="doc-biblioref">2021</a>)</span>).<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> We reuse the English, French, Czech, German, Hungarian, Portuguese and Romanian corpora. From each of these corpora, we selected a subset of 40 novels: 20 novels from the period from 1840 to 1860 and 20 novels from the period from 1900 to 1920.</p>
+<table class="table">
+<caption>{Overview of the corpora used in our experiments. : {#tbl-corpora}</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 27%">
+<col style="width: 24%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>name</th>
+<th>size (million words)</th>
+<th>standard deviation</th>
+<th>mean</th>
+<th>types</th>
+<th>authors</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>fra_80s</td>
+<td>8.83</td>
+<td>27,161</td>
+<td>55,225</td>
+<td>119,775</td>
+<td>120</td>
+</tr>
+<tr class="even">
+<td>fra_90s</td>
+<td>8.48</td>
+<td>26,976</td>
+<td>53,010</td>
+<td>111,501</td>
+<td>124</td>
+</tr>
+<tr class="odd">
+<td>ELTec_cze</td>
+<td>1.98</td>
+<td>24,734</td>
+<td>49,642</td>
+<td>163,900</td>
+<td>33</td>
+</tr>
+<tr class="even">
+<td>ELTec_deu</td>
+<td>4.62</td>
+<td>101,915</td>
+<td>115,531</td>
+<td>158,726</td>
+<td>30</td>
+</tr>
+<tr class="odd">
+<td>ELTec_eng</td>
+<td>4.66</td>
+<td>75,672</td>
+<td>116,477</td>
+<td>53,285</td>
+<td>35</td>
+</tr>
+<tr class="even">
+<td>ELTec_fra</td>
+<td>3.31</td>
+<td>86,926</td>
+<td>82,802</td>
+<td>65,799</td>
+<td>37</td>
+</tr>
+<tr class="odd">
+<td>ELTec_hun</td>
+<td>2.44</td>
+<td>40,513</td>
+<td>61,055</td>
+<td>258,026</td>
+<td>36</td>
+</tr>
+<tr class="even">
+<td>ELTec_por</td>
+<td>2.33</td>
+<td>38,787</td>
+<td>58,325</td>
+<td>95,572</td>
+<td>34</td>
+</tr>
+<tr class="odd">
+<td>ELTec_rom</td>
+<td>2.41</td>
+<td>36,493</td>
+<td>60,395</td>
+<td>156,103</td>
+<td>37</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>?@tbl-corpora</strong> gives a short overview of the measures of distinctiveness implemented in our Python library, along with their references and information about studies in which they were evaluated. Under the heading `Type of measure’, we very roughly characterize the underlying kind of quantification of the unit of measurement. As all the measures have different mathematical calculations and describing all of them in detail goes beyond the scope of this paper, we propose this typology as a brief and simplified review that summarizes the key characteristics of the implemented measures.</p>
+</section>
+<section id="sec-04" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="sec-04"><span class="header-section-number">2.3</span> Results</h2>
+<section id="sec-04-1" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="sec-04-1"><span class="header-section-number">2.3.1</span> Classification of French Popular Novel Collections (1980s and 1990s) – static</h3>
+<p><a href="#fig-01">Figure&nbsp;1</a> shows the classification results of the 1980s-corpus. The Decision Tree Classifier has a clearly lower performance than the other three classifiers. The other three classifiers produce better results with similar trends of F1-scores across different measures. Therefore, in our further experiments we focus on results based on one classifier, namely the Multinominal NB.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> The classification results of the 1990s-corpus, for this preliminary test, are very similar to the results presented in <a href="#fig-01">Figure&nbsp;1</a> and thus are not shown here.</p>
+<div id="fig-01" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="Fig1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Figure 1: Classification</figcaption><p></p>
+</figure>
+</div>
+<p>Figure <strong>?@fig-02</strong> shows the F1-macro score distribution from 10 fold cross-validation for classification of the French novel segments of the 1980s-dataset. The setting of <span class="math inline">\(N\)</span> varies from 10 to 5000. The baseline is visualized as a green line in the plot. It corresponds to the average of the classification results based on <em>N * 8</em> random words, resampled 1000 times.</p>
+</section>
+<section id="sec-04-2" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="sec-04-2"><span class="header-section-number">2.3.2</span> Classification of French Popular Novel Collections (1980s and 1990s) – dynamic</h3>
+<div class="cell" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># === Imports</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> os.path <span class="im">import</span> join</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># === Functions</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_resultsdata(): </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    resultsfile <span class="op">=</span> join(<span class="st">"results"</span>, <span class="st">"classification_results_fra_80s.csv"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(resultsfile, <span class="st">"r"</span>, encoding<span class="op">=</span><span class="st">"utf8"</span>) <span class="im">as</span> infile:</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        resultsdata <span class="op">=</span> pd.read_csv(infile, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        resultsdata <span class="op">=</span> resultsdata.loc[resultsdata[<span class="st">'classifier'</span>] <span class="op">==</span> <span class="st">'MultinomialNB'</span>]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        resultsdata <span class="op">=</span> resultsdata.loc[resultsdata[<span class="st">'measure'</span>] <span class="op">!=</span> <span class="st">'KL_Divergence'</span>]</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        resultsdata <span class="op">=</span> resultsdata.sort_values(by<span class="op">=</span>[<span class="st">'f1_macro_mean'</span>])</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> resultsdata</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_randomdata(): </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    randomfile <span class="op">=</span> join(<span class="st">"results"</span>, <span class="st">"random_words_classification_results_fra_80s.csv"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(randomfile, <span class="st">"r"</span>, encoding<span class="op">=</span><span class="st">"utf8"</span>) <span class="im">as</span> infile: </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        randomdata <span class="op">=</span> pd.read_csv(randomfile, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        randomdata <span class="op">=</span> randomdata.loc[randomdata[<span class="st">'classifier'</span>] <span class="op">==</span> <span class="st">'MultinomialNB'</span>]</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> randomdata</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> visualize_classification(resultsdata, randomdata): </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    order <span class="op">=</span> [<span class="st">'RRF'</span>, <span class="st">'χ2'</span>, <span class="st">'LLR'</span>, <span class="st">'Welch'</span>, <span class="st">'Wilcoxon'</span>, <span class="st">'TF-IDF'</span>, <span class="st">'Eta'</span>, <span class="st">'Zeta_orig'</span>, <span class="st">'Zeta_log'</span>]</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    sns.<span class="bu">set</span>(font_scale<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    sns.set_style(<span class="st">"whitegrid"</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    f, ax <span class="op">=</span> plt.subplots(figsize <span class="op">=</span> (<span class="dv">15</span>,<span class="dv">15</span>))</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    sns.pointplot(y<span class="op">=</span><span class="st">"N"</span>, x<span class="op">=</span><span class="st">"F1_macro_mean"</span>, data<span class="op">=</span>randomdata, orient<span class="op">=</span><span class="st">'h'</span>, color<span class="op">=</span><span class="st">'green'</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    g <span class="op">=</span> sns.boxplot(y<span class="op">=</span><span class="st">'N'</span>, x<span class="op">=</span><span class="st">'F1'</span>, data<span class="op">=</span>resultsdata, hue<span class="op">=</span><span class="st">'measure'</span>, orient<span class="op">=</span><span class="st">'h'</span>, showfliers<span class="op">=</span><span class="va">True</span>, palette<span class="op">=</span><span class="st">"colorblind"</span>, hue_order <span class="op">=</span> order)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    g.legend(title<span class="op">=</span><span class="st">'measure'</span>, loc<span class="op">=</span><span class="st">'lower center'</span>, bbox_to_anchor<span class="op">=</span>(<span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.22</span>), ncol<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    ax.invert_yaxis()</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="st">'F1_distributions_fra_90s'</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    ax.<span class="bu">set</span>(xlim<span class="op">=</span>(<span class="dv">0</span>, <span class="fl">1.02</span>))</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main(): </span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    resultsdata <span class="op">=</span> load_resultsdata()</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    randomdata <span class="op">=</span> load_randomdata()</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    visualize_classification(resultsdata, randomdata)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-fra80s" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="testing-quarto_files/figure-html/fig-fra80s-output-1.png" width="1307" height="1363" class="figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Classification results for ELTeC-1980s</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-05" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-05"><span class="header-section-number">2.4</span> Multilingual Setting</h2>
+</section>
+<section id="sec-06" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-06"><span class="header-section-number">2.5</span> Conclusion</h2>
+</section>
+</section>
+<section id="references" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-burnard_search_2021" class="csl-entry" role="doc-biblioentry">
+Burnard, Lou, Christof Schöch, and Carolin Odebrecht. 2021. <span>“In Search of Comity: <span>TEI</span> for Distant Reading.”</span> <em>Journal of the Text Encoding Initiative</em>, no. 14. <a href="https://doi.org/10.4000/jtei.3500">https://doi.org/10.4000/jtei.3500</a>.
+</div>
+<div id="ref-diez_openintro_2019" class="csl-entry" role="doc-biblioentry">
+Diez, David, Mine Cetinkaya-Rundel, and Christopher D. Barr. 2019. <em><span>OpenIntro</span> <span>Statistics</span></em>. 4th ed. OpenIntro. <a href="https://www.openintro.org/book/os/">https://www.openintro.org/book/os/</a>.
+</div>
+<div id="ref-klimek_vergleich_2015" class="csl-entry" role="doc-biblioentry">
+Klimek, Sonja, and Ralph Müller. 2015. <span>“Vergleich Als <span>Methode</span>? <span>Zur</span> <span>Empirisierung</span> Eines Philologischen <span>Verfahrens</span> Im <span>Zeitalter</span> Der <span>Digital</span> <span>Humanities</span>.”</span> <em>Journal of Literary Theory</em>, no. 9, 1. <a href="https://doi.org/10.1515/jlt-2015-0004">https://doi.org/10.1515/jlt-2015-0004</a>.
+</div>
+<div id="ref-organisciak_research_2021" class="csl-entry" role="doc-biblioentry">
+Organisciak, Peter, and J. Stephen Downie. 2021. <span>“Research Access to in-Copyright Texts in the Humanities.”</span> In <em>Information and <span>Knowledge</span> <span>Organisation</span> in <span>Digital</span> <span>Humanities</span></em>, 157–77. Routledge. <a href="https://doi.org/10.4324/9781003131816-8">https://doi.org/10.4324/9781003131816-8</a>.
+</div>
+<div id="ref-schoch_abgeleitete_2020" class="csl-entry" role="doc-biblioentry">
+Schöch, Christof, Frédéric Döhl, Achim Rettinger, Evelyn Gius, Peer Trilcke, Peter Leinen, Fotis Jannidis, Maria Hinzmann, and Jörg Röpke. 2020. <span>“Abgeleitete <span>Textformate</span>: <span>Text</span> Und <span>Data</span> <span>Mining</span> Mit Urheberrechtlich Geschützten <span>Textbeständen</span>.”</span> <em>Zeitschrift Für Digitale Geisteswissenschaften</em>. <a href="https://doi.org/10.17175/2020_006">https://doi.org/10.17175/2020_006</a>.
+</div>
+<div id="ref-schoch_creating_2021" class="csl-entry" role="doc-biblioentry">
+Schöch, Christof, Roxana Patras, Tomaž Erjavec, and Diana Santos. 2021. <span>“Creating the <span>European</span> <span>Literary</span> <span>Text</span> <span>Collection</span> (<span>ELTeC</span>): <span>Challenges</span> and <span>Perspectives</span>.”</span> <em>Modern Languages Open</em>, no. 1: 1–19. <a href="https://doi.org/10.3828/mlo.v0i0.364">https://doi.org/10.3828/mlo.v0i0.364</a>.
+</div>
+<div id="ref-schroter_keyness_2021" class="csl-entry" role="doc-biblioentry">
+Schröter, Julian, Keli Du, Julia Dudar, Cora Rok, and Christof Schöch. 2021. <span>“From <span>Keyness</span> to <span>Distinctiveness</span> – <span>Triangulation</span> and <span>Evaluation</span> in <span>Computational</span> <span>Literary</span> <span>Studies</span>.”</span> <em>Journal of Literary Theory (JLT)</em>, no. 9, 1–2: 81–108. <a href="https://doi.org/10.1515/jlt-2021-2011">https://doi.org/10.1515/jlt-2021-2011</a>.
+</div>
+<div id="ref-tufte_envisioning_1990" class="csl-entry" role="doc-biblioentry">
+Tufte, Edward R. 1990. <em>Envisioning Information</em>. Graphics Press.
+</div>
+</div>
+</section>
+
+
+
+
+<div id="quarto-appendix" class="default"><section id="appendix-a-demo-code-from-quarto" class="level1 appendix" data-number="4"><h2 class="quarto-appendix-heading"><span class="header-section-number">4</span> Appendix A: Demo code from Quarto</h2><div class="quarto-appendix-contents">
+
+<section id="the-equations-example" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="the-equations-example"><span class="header-section-number">4.1</span> The equations example</h2>
+<p>Einstein’s theory of special relatively that expresses the equivalence of mass and energy:</p>
+<p><span class="math inline">\(E = mc^{2}\)</span></p>
+</section>
+<section id="the-polar-axis-example" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="the-polar-axis-example"><span class="header-section-number">4.2</span> The polar axis example</h2>
+<p>https://quarto.org/docs/get-started/hello/vscode.html</p>
+<p>For a demonstration of a line plot on a polar axis, see <a href="#fig-polar">Figure&nbsp;3</a>.</p>
+<div class="cell" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  subplot_kw <span class="op">=</span> {<span class="st">'projection'</span>: <span class="st">'polar'</span>} </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>ax.plot(theta, r)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>ax.set_rticks([<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>])</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div id="fig-polar" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="testing-quarto_files/figure-html/fig-polar-output-1.png" width="478" height="454" class="figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: A line plot on a polar axis</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</div></section><section id="appendix-b-general-remarks-about-this-test" class="level1 appendix" data-number="5"><h2 class="quarto-appendix-heading"><span class="header-section-number">5</span> Appendix B: General remarks about this test</h2><div class="quarto-appendix-contents">
+
+<ul>
+<li>The mode of testing is installing Quarto locally and using VS Code to edit files. How this would work as a collaborative, online editor is another question. Github integration would clearly be an option, but then it is not concurrent editing, but push/pull to a repo: doable, but with its own issues.</li>
+<li>How can I place the appendices after the references? Solved: use the refs attribute (see above).</li>
+</ul>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>See: [https://github.com/Zeta-and-Company/pydistinto], DOI: <a href="https://doi.org/10.5281/zenodo.6517683">10.5281/zenodo.6517683</a>.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>See [https://github.com/Zeta-and-Company/derived-formats]; DOI: <a href="10.5281/zenodo.7111522">https://doi.org/10.5281/zenodo.7111522</a>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Texts and metadata for these collections are available on Github: <a href="https://github.com/COST-ELTeC">github.com/COST-ELTeC</a>; DOI: <a href="10.5281/zenodo.3462435">https://doi.org/10.5281/zenodo.4662444</a>. On the COST Action more generally, see also: <a href="https://www.distant-reading.net/">distant-reading.net/</a>.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>According to <a href="https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html">scikit-learn.org/stable/tutorial/machine_learning_map/index.html</a>, Naive Bayes methods are suggested for classification of text data.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@article{du2022,
+  author = {Keli Du and Julia Dudar and Christof Schöch},
+  title = {Evaluating {Measures} of {Distinctiveness.} {Or,} {Testing}
+    {Quarto} for {JCLS}},
+  journal = {Journal of Computational Literary Studies},
+  date = {2022-11-27},
+  url = {https://jcls.io/article/id/102/},
+  doi = {10.48694/jcls.102},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-du2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Keli Du, Julia Dudar, and Christof Schöch. 2022. <span>“Evaluating
+Measures of Distinctiveness. Or, Testing Quarto for JCLS.”</span>
+<em>Journal of Computational Literary Studies</em>, November. <a href="https://doi.org/10.48694/jcls.102">https://doi.org/10.48694/jcls.102</a>.
+</div></div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

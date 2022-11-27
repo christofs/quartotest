@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving and Interchange DTD v1.2 20190208//EN"
+                  "JATS-archivearticle1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.2" article-type="other">
+<front>
+<journal-meta>
+<journal-id></journal-id>
+<journal-title-group>
+<journal-title>Journal of Computational Literary Studies</journal-title>
+</journal-title-group>
+<issn></issn>
+<publisher>
+<publisher-name>JCLS</publisher-name>
+</publisher>
+</journal-meta>
+<article-meta>
+<title-group>
+<article-title>Evaluating Measures of Distinctiveness</article-title>
+<subtitle>Or: Testing Quarto for JCLS</subtitle>
+</title-group>
+<contrib-group>
+<contrib contrib-type="author">
+<string-name>Keli Du</string-name>
+</contrib>
+<contrib contrib-type="author">
+<string-name>Julia Dudar</string-name>
+</contrib>
+<contrib contrib-type="author">
+<string-name>Christof Schöch</string-name>
+</contrib>
+</contrib-group>
+<pub-date date-type="pub" publication-format="electronic" iso-8601-date="2022-11-27">
+<day>27</day>
+<month>11</month>
+<year>2022</year>
+</pub-date>
+<permissions>
+</permissions>
+<abstract>
+This paper concerns an empirical evaluation of nine different measures
+of distinctiveness or ‘keyness’ in the context of Computational Literary
+Studies. We use nine different sets of literary texts (specifically,
+novels) written in seven different languages as a basis for this
+evaluation. The evaluation is performed as a downstream classification
+task, where segments of the novels need to be classified by subgenre or
+period of first publication. The classifier receives different numbers
+of features identified using different measures of distinctiveness. The
+main contribution of our paper is that we can show that across a wide
+variety of parameters, but especially when only a small number of
+features is used, (more recent) dispersion-based measures very often
+outperform other (more established) frequency-based measures by
+significant margins. Our findings support an emerging trend to consider
+dispersion as an important property of words in addition to frequency.
+</abstract>
+</article-meta>
+</front>
+<body>
+<sec id="sec-01">
+  <title>1. Introduction</title>
+  <p>Edward Tufte, the pioneer of data visualization, famously wrote:
+  “At the heart of quantitative reasoning is a single question: Compared
+  to what?” (Tufte 1990, 67). And indeed, any number or value
+  established in some way can only really be endowed with meaning when
+  it is placed in the context of other, comparable numbers or values.
+  One may think of several fundamental strategies for such a
+  contextualization of numbers. Taking the same measurement at different
+  times is one such strategy and taking the same measurement in
+  different subsets of a dataset is another. Each of these strategies
+  comes with typical statistical operations for the comparison of the
+  values, such as regression to determine a trend over time or a test of
+  statistical significance to compare the distributions of values in two
+  subsets of a dataset (Diez, Cetinkaya-Rundel, and Barr 2019).</p>
+  <p>What the above observation points to is that comparison is a
+  fundamental operation in many domains operating with numerical values.
+  This is also true, however, for many text-based domains of research,
+  whether statistically-oriented or not (Klimek and Müller 2015). The
+  research we report on here brings both strands together in the sense
+  that it is located at the intersection of literary studies and
+  statistics. More precisely, our research is concerned with modeling,
+  implementing, evaluating and using statistical measures of comparison
+  of two or several groups of texts. The measures we focus on are used
+  to identify characteristic or distinctive features of each group of
+  texts in order to gain an evidence-based understanding of the specific
+  contents, style and/or structure of these groups of texts. As we
+  describe below, such measures have been developed in domains such as
+  Information Retrieval (IR), Corpus and Computational Linguistics (CL),
+  or Computational Literary Studies (CLS). In our research, we bring
+  together knowledge and insight from these domains with the general
+  objective of fostering a better understanding of measures of
+  distinctiveness.</p>
+  <p>The research we report on in this contribution is set in the wider
+  context of our research into measures of distinctiveness for
+  comparison of groups of texts. Previously, we have worked on the issue
+  of qualitative validation of measures of distinctiveness (see
+  (Schröter et al. 2021). We have also implemented a wide range of
+  measures of distinctiveness in our Python package
+  <italic>pydistinto</italic>.<xref ref-type="fn" rid="fn1">1</xref>
+  With the current contribution, we focus on the step of evaluating the
+  performance of a substantial range of such measures using a downstream
+  classification task.</p>
+  <p>Our paper is structured as follows: First, we summarize related
+  work (a) describing different measures of distinctiveness and (b)
+  specifically comparing several measures of distinctiveness to each
+  other (<xref alt="Section 2" rid="sec-02">Section 2</xref>). We go on
+  to describe the different corpora we have used for our study
+  (<xref alt="Section 3" rid="sec-03">Section 3</xref>) as well as the
+  methods used to perform the evaluation task and to analyze the results
+  (<xref alt="Section 4" rid="sec-04">Section 4</xref>). We then discuss
+  the results we have obtained, first in a single-language setting, then
+  in a multi-language setting
+  (<xref alt="Section 5" rid="sec-05">Section 5</xref>). We close our
+  contribution by summarizing our key findings and describing possible
+  future work (<xref alt="Section 6" rid="sec-06">Section 6</xref>).</p>
+</sec>
+<sec id="sec-02">
+  <title>2. Related Work</title>
+</sec>
+<sec id="sec-03">
+  <title>3. Corpora</title>
+  <p>For our analysis we used nine text collections. The first two
+  corpora consist of contemporary popular novels in French published
+  between 1980 and 1999 (160 novels published in the 1980s and 160
+  novels published in the 1990s). To enable the comparison and
+  classification of texts, we designed these custom-built corpora in a
+  way that they contain the same number of novels for each of four
+  subgroups: highbrow novels on the one hand, and lowbrow novels of
+  three subgenres (sentimental novels, crime fiction and science
+  fiction) on the other. The texts in these corpora are, for obvious
+  reasons, still protected by copyright. As a consequence, we cannot
+  make these corpora freely available as full texts. We have published
+  them, however, in the form of a so-called “derived text format”
+  (Schöch et al. (2020), Organisciak and Downie (2021)) suitable for use
+  with our Python library and devoid of any copyright
+  protection.<xref ref-type="fn" rid="fn2">2</xref></p>
+  <p>Another group of text corpora that we used for our analysis
+  consists of seven collections of novels in seven different European
+  languages taken from the (ELTeC) produced in the COST Action
+  <italic>Distant Reading for European Literary History</italic> (see
+  Burnard, Schöch, and Odebrecht (2021); Schöch et al.
+  (2021)).<xref ref-type="fn" rid="fn3">3</xref> We reuse the English,
+  French, Czech, German, Hungarian, Portuguese and Romanian corpora.
+  From each of these corpora, we selected a subset of 40 novels: 20
+  novels from the period from 1840 to 1860 and 20 novels from the period
+  from 1900 to 1920.</p>
+  <boxed-text id="tbl-corpora">
+    <table-wrap>
+      <caption>
+        <p>Table 1: Overview of the corpora used in our experiments.</p>
+      </caption>
+      <table>
+        <colgroup>
+          <col width="14%" />
+          <col width="27%" />
+          <col width="25%" />
+          <col width="11%" />
+          <col width="11%" />
+          <col width="11%" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>size (million words)</th>
+            <th>standard deviation</th>
+            <th>mean</th>
+            <th>types</th>
+            <th>authors</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>fra_80s</td>
+            <td>8.83</td>
+            <td>27,161</td>
+            <td>55,225</td>
+            <td>119,775</td>
+            <td>120</td>
+          </tr>
+          <tr>
+            <td>fra_90s</td>
+            <td>8.48</td>
+            <td>26,976</td>
+            <td>53,010</td>
+            <td>111,501</td>
+            <td>124</td>
+          </tr>
+          <tr>
+            <td>ELTec_cze</td>
+            <td>1.98</td>
+            <td>24,734</td>
+            <td>49,642</td>
+            <td>163,900</td>
+            <td>33</td>
+          </tr>
+          <tr>
+            <td>ELTec_deu</td>
+            <td>4.62</td>
+            <td>101,915</td>
+            <td>115,531</td>
+            <td>158,726</td>
+            <td>30</td>
+          </tr>
+          <tr>
+            <td>ELTec_eng</td>
+            <td>4.66</td>
+            <td>75,672</td>
+            <td>116,477</td>
+            <td>53,285</td>
+            <td>35</td>
+          </tr>
+          <tr>
+            <td>ELTec_fra</td>
+            <td>3.31</td>
+            <td>86,926</td>
+            <td>82,802</td>
+            <td>65,799</td>
+            <td>37</td>
+          </tr>
+          <tr>
+            <td>ELTec_hun</td>
+            <td>2.44</td>
+            <td>40,513</td>
+            <td>61,055</td>
+            <td>258,026</td>
+            <td>36</td>
+          </tr>
+          <tr>
+            <td>ELTec_por</td>
+            <td>2.33</td>
+            <td>38,787</td>
+            <td>58,325</td>
+            <td>95,572</td>
+            <td>34</td>
+          </tr>
+          <tr>
+            <td>ELTec_rom</td>
+            <td>2.41</td>
+            <td>36,493</td>
+            <td>60,395</td>
+            <td>156,103</td>
+            <td>37</td>
+          </tr>
+        </tbody>
+      </table>
+    </table-wrap>
+  </boxed-text>
+  <p>The <xref alt="Table 1" rid="tbl-corpora">Table 1</xref> gives a
+  short overview of the measures of distinctiveness implemented in our
+  Python library, along with their references and information about
+  studies in which they were evaluated. Under the heading `Type of
+  measure’, we very roughly characterize the underlying kind of
+  quantification of the unit of measurement. As all the measures have
+  different mathematical calculations and describing all of them in
+  detail goes beyond the scope of this paper, we propose this typology
+  as a brief and simplified review that summarizes the key
+  characteristics of the implemented measures.</p>
+</sec>
+<sec id="sec-04">
+  <title>4. Results</title>
+  <sec id="sec-04-1">
+    <title>4.1 Classification of French Popular Novel Collections (1980s
+    and 1990s)</title>
+    <p><xref alt="Figure 1" rid="fig-01">Figure 1</xref> shows the
+    classification results of the 1980s-corpus. The Decision Tree
+    Classifier has a clearly lower performance than the other three
+    classifiers. The other three classifiers produce better results with
+    similar trends of F1-scores across different measures. Therefore, in
+    our further experiments we focus on results based on one classifier,
+    namely the Multinominal NB.<xref ref-type="fn" rid="fn4">4</xref>
+    The classification results of the 1990s-corpus, for this preliminary
+    test, are very similar to the results presented in
+    <xref alt="Figure 1" rid="fig-01">Figure 1</xref> and thus are not
+    shown here.</p>
+    <fig id="fig-01">
+      <caption><p>Figure 1: Overall Classification results</p></caption>
+      <graphic mimetype="image" mime-subtype="png" xlink:href="figures/Fig1.png" xlink:title="" />
+    </fig>
+    <p><xref alt="Figure 2" rid="fig-02">Figure 2</xref> shows the
+    F1-macro score distribution from 10 fold cross-validation for
+    classification of the French novel segments of the 1980s-dataset.
+    The setting of <inline-formula><alternatives>
+    <tex-math><![CDATA[N]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mi>N</mml:mi></mml:math></alternatives></inline-formula>
+    varies from 10 to 5000. The baseline is visualized as a green line
+    in the plot. It corresponds to the average of the classification
+    results based on <italic>N * 8</italic> random words, resampled 1000
+    times.</p>
+    <boxed-text>
+      <code language="python"># === Imports
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from os.path import join
+
+# === Functions
+
+def load_resultsdata(): 
+    resultsfile = join(&quot;data&quot;, 
+        &quot;classification_results_fra_80s.csv&quot;)
+    with open(resultsfile, &quot;r&quot;, encoding=&quot;utf8&quot;) as infile:
+        resultsdata = pd.read_csv(infile, sep='\t')
+        resultsdata = resultsdata.loc[resultsdata['classifier'] == 'MultinomialNB']
+        resultsdata = resultsdata.loc[resultsdata['measure'] != 'KL_Divergence']
+        resultsdata = resultsdata.sort_values(by=['f1_macro_mean'])
+    return resultsdata
+
+def load_randomdata(): 
+    randomfile = join(&quot;data&quot;, 
+        &quot;random_words_classification_results_fra_80s.csv&quot;)
+    with open(randomfile, &quot;r&quot;, encoding=&quot;utf8&quot;) as infile: 
+        randomdata = pd.read_csv(randomfile, sep='\t')
+        randomdata = randomdata.loc[randomdata['classifier'] == 'MultinomialNB']
+    return randomdata
+
+def visualize_classification(): 
+    resultsdata = load_resultsdata()
+    randomdata = load_randomdata()
+    order = ['RRF', 'χ2', 'LLR', 'Welch', 'Wilcoxon',
+        'TF-IDF','Eta', 'Zeta_orig', 'Zeta_log']
+    sns.set(font_scale=2)
+    sns.set_style(&quot;whitegrid&quot;)
+    f, ax = plt.subplots(figsize = (8,16))
+    sns.pointplot(
+        y=&quot;N&quot;, x=&quot;F1_macro_mean&quot;, data=randomdata, 
+        orient='h', color='green')
+    g = sns.boxplot(
+        y='N', x='F1', data=resultsdata, hue='measure', 
+        orient='h', showfliers=True, palette=&quot;colorblind&quot;, 
+        hue_order = order)
+    g.legend(title='measure', loc='lower center', 
+        bbox_to_anchor=(0.5, -0.22), ncol=3)
+    ax.invert_yaxis()
+    ax.set_title('F1_distributions_fra_90s')
+    ax.set(xlim=(0, 1.02))
+    plt.show()
+
+visualize_classification()</code>
+      <boxed-text>
+        <fig id="fig-02">
+          <caption><p>Figure 2: Classification results for
+          ELTeC-1980s</p></caption>
+          <graphic mimetype="image" mime-subtype="png" xlink:href="testing-quarto_files/figure-jats/fig-02-output-1.png" xlink:title="" />
+        </fig>
+      </boxed-text>
+    </boxed-text>
+  </sec>
+</sec>
+<sec id="sec-05">
+  <title>5. Multilingual Setting</title>
+</sec>
+<sec id="sec-06">
+  <title>6. Conclusion</title>
+</sec>
+<sec id="references">
+  <title>7. References</title>
+</sec>
+<sec id="appendix-a-demo-code-from-quarto">
+  <title>8. Appendix A: Demo code from Quarto</title>
+  <sec id="the-equations-example">
+    <title>8.1 The equations example</title>
+    <p>Einstein’s theory of special relatively that expresses the
+    equivalence of mass and energy:</p>
+    <p><inline-formula><alternatives>
+    <tex-math><![CDATA[E = mc^{2}]]></tex-math>
+    <mml:math display="inline" xmlns:mml="http://www.w3.org/1998/Math/MathML"><mml:mrow><mml:mi>E</mml:mi><mml:mo>=</mml:mo><mml:mi>m</mml:mi><mml:msup><mml:mi>c</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:mrow></mml:math></alternatives></inline-formula></p>
+  </sec>
+  <sec id="the-polar-axis-example">
+    <title>8.2 The polar axis example</title>
+    <p>https://quarto.org/docs/get-started/hello/vscode.html</p>
+    <p>For a demonstration of a line plot on a polar axis, see
+    <xref alt="Figure 3" rid="fig-polar">Figure 3</xref>.</p>
+    <boxed-text>
+      <code language="python">import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()</code>
+      <boxed-text>
+        <fig id="fig-polar">
+          <caption><p>Figure 3: A line plot on a polar
+          axis</p></caption>
+          <graphic mimetype="image" mime-subtype="png" xlink:href="testing-quarto_files/figure-jats/fig-polar-output-1.png" xlink:title="" />
+        </fig>
+      </boxed-text>
+    </boxed-text>
+  </sec>
+</sec>
+<sec id="appendix-b-general-remarks-about-this-test">
+  <title>9. Appendix B: General remarks about this test</title>
+  <list list-type="bullet">
+    <list-item>
+      <p>The mode of testing is installing Quarto locally and using VS
+      Code to edit files. How this would work as a collaborative, online
+      editor is another question. Github integration would clearly be an
+      option, but then it is not concurrent editing, but push/pull to a
+      repo: doable, but with its own issues.</p>
+    </list-item>
+    <list-item>
+      <p>How can I place the appendices after the references? Solved:
+      use the refs attribute (see above).</p>
+    </list-item>
+  </list>
+</sec>
+</body>
+<back>
+<ref-list>
+  <ref id="ref-burnard_search_2021">
+    <mixed-citation>Burnard, Lou, Christof Schöch, and Carolin
+    Odebrecht. 2021. “In Search of Comity: TEI for Distant Reading.”
+    <italic>Journal of the Text Encoding Initiative</italic>, no. 14.
+    <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.4000/jtei.3500">https://doi.org/10.4000/jtei.3500</ext-link>.</mixed-citation>
+  </ref>
+  <ref id="ref-diez_openintro_2019">
+    <mixed-citation>Diez, David, Mine Cetinkaya-Rundel, and Christopher
+    D. Barr. 2019. <italic>OpenIntro Statistics</italic>. 4th ed.
+    OpenIntro.
+    <ext-link ext-link-type="uri" xlink:href="https://www.openintro.org/book/os/">https://www.openintro.org/book/os/</ext-link>.</mixed-citation>
+  </ref>
+  <ref id="ref-klimek_vergleich_2015">
+    <mixed-citation>Klimek, Sonja, and Ralph Müller. 2015. “Vergleich
+    Als Methode? Zur Empirisierung Eines Philologischen Verfahrens Im
+    Zeitalter Der Digital Humanities.” <italic>Journal of Literary
+    Theory</italic>, no. 9, 1.
+    <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1515/jlt-2015-0004">https://doi.org/10.1515/jlt-2015-0004</ext-link>.</mixed-citation>
+  </ref>
+  <ref id="ref-organisciak_research_2021">
+    <mixed-citation>Organisciak, Peter, and J. Stephen Downie. 2021.
+    “Research Access to in-Copyright Texts in the Humanities.” In
+    <italic>Information and Knowledge Organisation in Digital
+    Humanities</italic>, 157–77. Routledge.
+    <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.4324/9781003131816-8">https://doi.org/10.4324/9781003131816-8</ext-link>.</mixed-citation>
+  </ref>
+  <ref id="ref-schoch_abgeleitete_2020">
+    <mixed-citation>Schöch, Christof, Frédéric Döhl, Achim Rettinger,
+    Evelyn Gius, Peer Trilcke, Peter Leinen, Fotis Jannidis, Maria
+    Hinzmann, and Jörg Röpke. 2020. “Abgeleitete Textformate: Text Und
+    Data Mining Mit Urheberrechtlich Geschützten Textbeständen.”
+    <italic>Zeitschrift Für Digitale Geisteswissenschaften</italic>.
+    <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.17175/2020_006">https://doi.org/10.17175/2020_006</ext-link>.</mixed-citation>
+  </ref>
+  <ref id="ref-schoch_creating_2021">
+    <mixed-citation>Schöch, Christof, Roxana Patras, Tomaž Erjavec, and
+    Diana Santos. 2021. “Creating the European Literary Text Collection
+    (ELTeC): Challenges and Perspectives.” <italic>Modern Languages
+    Open</italic>, no. 1: 1–19.
+    <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.3828/mlo.v0i0.364">https://doi.org/10.3828/mlo.v0i0.364</ext-link>.</mixed-citation>
+  </ref>
+  <ref id="ref-schroter_keyness_2021">
+    <mixed-citation>Schröter, Julian, Keli Du, Julia Dudar, Cora Rok,
+    and Christof Schöch. 2021. “From Keyness to Distinctiveness –
+    Triangulation and Evaluation in Computational Literary Studies.”
+    <italic>Journal of Literary Theory (JLT)</italic>, no. 9, 1–2:
+    81–108.
+    <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1515/jlt-2021-2011">https://doi.org/10.1515/jlt-2021-2011</ext-link>.</mixed-citation>
+  </ref>
+  <ref id="ref-tufte_envisioning_1990">
+    <mixed-citation>Tufte, Edward R. 1990. <italic>Envisioning
+    Information</italic>. Graphics Press.</mixed-citation>
+  </ref>
+</ref-list>
+<fn-group>
+  <fn id="fn1">
+    <label>1</label><p>See:
+    <ext-link ext-link-type="uri" xlink:href="https://github.com/Zeta-and-Company/pydistinto">https://github.com/Zeta-and-Company/pydistinto</ext-link>,
+    DOI:
+    <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5281/zenodo.6517683">10.5281/zenodo.6517683</ext-link>.</p>
+  </fn>
+  <fn id="fn2">
+    <label>2</label><p>See URL:
+    <ext-link ext-link-type="uri" xlink:href="https://github.com/Zeta-and-Company/derived-formats">https://github.com/Zeta-and-Company/derived-formats</ext-link>;
+    DOI:
+    <ext-link ext-link-type="uri" xlink:href="10.5281/zenodo.7111522">https://doi.org/10.5281/zenodo.7111522</ext-link>.</p>
+  </fn>
+  <fn id="fn3">
+    <label>3</label><p>Texts and metadata for these collections are
+    available on Github:
+    <ext-link ext-link-type="uri" xlink:href="https://github.com/COST-ELTeC">https://github.com/COST-ELTeC</ext-link>;
+    DOI:
+    <ext-link ext-link-type="uri" xlink:href="10.5281/zenodo.3462435">https://doi.org/10.5281/zenodo.4662444</ext-link>.
+    On the COST Action more generally, see also:
+    <ext-link ext-link-type="uri" xlink:href="https://www.distant-reading.net/">https://www.distant-reading.net/</ext-link>.</p>
+  </fn>
+  <fn id="fn4">
+    <label>4</label><p>According to
+    <ext-link ext-link-type="uri" xlink:href="https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html">scikit-learn.org/stable/tutorial/machine_learning_map/index.html</ext-link>,
+    Naive Bayes methods are suggested for classification of text
+    data.</p>
+  </fn>
+</fn-group>
+</back>
+</article>

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TEI xmlns="http://www.tei-c.org/ns/1.0">
+<teiHeader>
+  <fileDesc>
+    <titleStmt>
+      <title>Evaluating Measures of Distinctiveness</title>
+      <author>Keli Du</author>
+      <author>Julia Dudar</author>
+      <author>Christof Schöch</author>
+    </titleStmt>
+    <publicationStmt>
+      <date>11/27/22</date>
+    </publicationStmt>
+    <sourceDesc>
+      <p>Produced by pandoc.</p>
+    </sourceDesc>
+  </fileDesc>
+</teiHeader>
+<text>
+<body>
+<div type="level1" xml:id="sec-01">
+  <head>1. Introduction</head>
+  <p>Edward Tufte, the pioneer of data visualization, famously wrote:
+  <quote>At the heart of quantitative reasoning is a single question:
+  Compared to what?</quote> (Tufte 1990, 67). And indeed, any number or
+  value established in some way can only really be endowed with meaning
+  when it is placed in the context of other, comparable numbers or
+  values. One may think of several fundamental strategies for such a
+  contextualization of numbers. Taking the same measurement at different
+  times is one such strategy and taking the same measurement in
+  different subsets of a dataset is another. Each of these strategies
+  comes with typical statistical operations for the comparison of the
+  values, such as regression to determine a trend over time or a test of
+  statistical significance to compare the distributions of values in two
+  subsets of a dataset (Diez, Cetinkaya-Rundel, and Barr 2019).</p>
+  <p>What the above observation points to is that comparison is a
+  fundamental operation in many domains operating with numerical values.
+  This is also true, however, for many text-based domains of research,
+  whether statistically-oriented or not (Klimek and Müller 2015). The
+  research we report on here brings both strands together in the sense
+  that it is located at the intersection of literary studies and
+  statistics. More precisely, our research is concerned with modeling,
+  implementing, evaluating and using statistical measures of comparison
+  of two or several groups of texts. The measures we focus on are used
+  to identify characteristic or distinctive features of each group of
+  texts in order to gain an evidence-based understanding of the specific
+  contents, style and/or structure of these groups of texts. As we
+  describe below, such measures have been developed in domains such as
+  Information Retrieval (IR), Corpus and Computational Linguistics (CL),
+  or Computational Literary Studies (CLS). In our research, we bring
+  together knowledge and insight from these domains with the general
+  objective of fostering a better understanding of measures of
+  distinctiveness.</p>
+  <p>The research we report on in this contribution is set in the wider
+  context of our research into measures of distinctiveness for
+  comparison of groups of texts. Previously, we have worked on the issue
+  of qualitative validation of measures of distinctiveness (see
+  (Schröter et al. 2021). We have also implemented a wide range of
+  measures of distinctiveness in our Python package
+  <hi rendition="simple:italic">pydistinto</hi>.<note>
+    <p>See:
+    <ref target="https://github.com/Zeta-and-Company/pydistinto">https://github.com/Zeta-and-Company/pydistinto</ref>,
+    DOI:
+    <ref target="https://doi.org/10.5281/zenodo.6517683">10.5281/zenodo.6517683</ref>.</p>
+  </note> With the current contribution, we focus on the step of
+  evaluating the performance of a substantial range of such measures
+  using a downstream classification task.</p>
+  <p>Our paper is structured as follows: First, we summarize related
+  work (a) describing different measures of distinctiveness and (b)
+  specifically comparing several measures of distinctiveness to each
+  other (<ref target="#sec-02">Section 2</ref>). We go on to describe
+  the different corpora we have used for our study
+  (<ref target="#sec-03">Section 3</ref>) as well as the methods used to
+  perform the evaluation task and to analyze the results
+  (<ref target="#sec-04">Section 4</ref>). We then discuss the results
+  we have obtained, first in a single-language setting, then in a
+  multi-language setting (<ref target="#sec-05">Section 5</ref>). We
+  close our contribution by summarizing our key findings and describing
+  possible future work (<ref target="#sec-06">Section 6</ref>).</p>
+</div>
+<div type="level1" xml:id="sec-02">
+  <head>2. Related Work</head>
+  <p></p>
+</div>
+<div type="level1" xml:id="sec-03">
+  <head>3. Corpora</head>
+  <p>For our analysis we used nine text collections. The first two
+  corpora consist of contemporary popular novels in French published
+  between 1980 and 1999 (160 novels published in the 1980s and 160
+  novels published in the 1990s). To enable the comparison and
+  classification of texts, we designed these custom-built corpora in a
+  way that they contain the same number of novels for each of four
+  subgroups: highbrow novels on the one hand, and lowbrow novels of
+  three subgenres (sentimental novels, crime fiction and science
+  fiction) on the other. The texts in these corpora are, for obvious
+  reasons, still protected by copyright. As a consequence, we cannot
+  make these corpora freely available as full texts. We have published
+  them, however, in the form of a so-called <quote>derived text
+  format</quote> (Schöch et al. (2020), Organisciak and Downie (2021))
+  suitable for use with our Python library and devoid of any copyright
+  protection.<note>
+    <p>See URL:
+    <ref target="https://github.com/Zeta-and-Company/derived-formats">https://github.com/Zeta-and-Company/derived-formats</ref>;
+    DOI:
+    <ref target="10.5281/zenodo.7111522">https://doi.org/10.5281/zenodo.7111522</ref>.</p>
+  </note></p>
+  <p>Another group of text corpora that we used for our analysis
+  consists of seven collections of novels in seven different European
+  languages taken from the (ELTeC) produced in the COST Action
+  <hi rendition="simple:italic">Distant Reading for European Literary
+  History</hi> (see Burnard, Schöch, and Odebrecht (2021); Schöch et al.
+  (2021)).<note>
+    <p>Texts and metadata for these collections are available on Github:
+    <ref target="https://github.com/COST-ELTeC">https://github.com/COST-ELTeC</ref>;
+    DOI:
+    <ref target="10.5281/zenodo.3462435">https://doi.org/10.5281/zenodo.4662444</ref>.
+    On the COST Action more generally, see also:
+    <ref target="https://www.distant-reading.net/">https://www.distant-reading.net/</ref>.</p>
+  </note> We reuse the English, French, Czech, German, Hungarian,
+  Portuguese and Romanian corpora. From each of these corpora, we
+  selected a subset of 40 novels: 20 novels from the period from 1840 to
+  1860 and 20 novels from the period from 1900 to 1920.</p>
+  <table>
+    <row role="label">
+      <cell><p>name</p></cell>
+      <cell><p>size (million words)</p></cell>
+      <cell><p>standard deviation</p></cell>
+      <cell><p>mean</p></cell>
+      <cell><p>types</p></cell>
+      <cell><p>authors</p></cell>
+    </row>
+    <row>
+      <cell><p>fra_80s</p></cell>
+      <cell><p>8.83</p></cell>
+      <cell><p>27,161</p></cell>
+      <cell><p>55,225</p></cell>
+      <cell><p>119,775</p></cell>
+      <cell><p>120</p></cell>
+    </row>
+    <row>
+      <cell><p>fra_90s</p></cell>
+      <cell><p>8.48</p></cell>
+      <cell><p>26,976</p></cell>
+      <cell><p>53,010</p></cell>
+      <cell><p>111,501</p></cell>
+      <cell><p>124</p></cell>
+    </row>
+    <row>
+      <cell><p>ELTec_cze</p></cell>
+      <cell><p>1.98</p></cell>
+      <cell><p>24,734</p></cell>
+      <cell><p>49,642</p></cell>
+      <cell><p>163,900</p></cell>
+      <cell><p>33</p></cell>
+    </row>
+    <row>
+      <cell><p>ELTec_deu</p></cell>
+      <cell><p>4.62</p></cell>
+      <cell><p>101,915</p></cell>
+      <cell><p>115,531</p></cell>
+      <cell><p>158,726</p></cell>
+      <cell><p>30</p></cell>
+    </row>
+    <row>
+      <cell><p>ELTec_eng</p></cell>
+      <cell><p>4.66</p></cell>
+      <cell><p>75,672</p></cell>
+      <cell><p>116,477</p></cell>
+      <cell><p>53,285</p></cell>
+      <cell><p>35</p></cell>
+    </row>
+    <row>
+      <cell><p>ELTec_fra</p></cell>
+      <cell><p>3.31</p></cell>
+      <cell><p>86,926</p></cell>
+      <cell><p>82,802</p></cell>
+      <cell><p>65,799</p></cell>
+      <cell><p>37</p></cell>
+    </row>
+    <row>
+      <cell><p>ELTec_hun</p></cell>
+      <cell><p>2.44</p></cell>
+      <cell><p>40,513</p></cell>
+      <cell><p>61,055</p></cell>
+      <cell><p>258,026</p></cell>
+      <cell><p>36</p></cell>
+    </row>
+    <row>
+      <cell><p>ELTec_por</p></cell>
+      <cell><p>2.33</p></cell>
+      <cell><p>38,787</p></cell>
+      <cell><p>58,325</p></cell>
+      <cell><p>95,572</p></cell>
+      <cell><p>34</p></cell>
+    </row>
+    <row>
+      <cell><p>ELTec_rom</p></cell>
+      <cell><p>2.41</p></cell>
+      <cell><p>36,493</p></cell>
+      <cell><p>60,395</p></cell>
+      <cell><p>156,103</p></cell>
+      <cell><p>37</p></cell>
+    </row>
+  </table>
+  <p>The <ref target="#tbl-corpora">Table 1</ref> gives a short overview
+  of the measures of distinctiveness implemented in our Python library,
+  along with their references and information about studies in which
+  they were evaluated. Under the heading `Type of measure’, we very
+  roughly characterize the underlying kind of quantification of the unit
+  of measurement. As all the measures have different mathematical
+  calculations and describing all of them in detail goes beyond the
+  scope of this paper, we propose this typology as a brief and
+  simplified review that summarizes the key characteristics of the
+  implemented measures.</p>
+</div>
+<div type="level1" xml:id="sec-04">
+  <head>4. Results</head>
+  <div type="level2" xml:id="sec-04-1">
+    <head>4.1 Classification of French Popular Novel Collections (1980s
+    and 1990s)</head>
+    <p><ref target="#fig-01">Figure 1</ref> shows the classification
+    results of the 1980s-corpus. The Decision Tree Classifier has a
+    clearly lower performance than the other three classifiers. The
+    other three classifiers produce better results with similar trends
+    of F1-scores across different measures. Therefore, in our further
+    experiments we focus on results based on one classifier, namely the
+    Multinominal NB.<note>
+      <p>According to
+      <ref target="https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html">scikit-learn.org/stable/tutorial/machine_learning_map/index.html</ref>,
+      Naive Bayes methods are suggested for classification of text
+      data.</p>
+    </note> The classification results of the 1990s-corpus, for this
+    preliminary test, are very similar to the results presented in
+    <ref target="#fig-01">Figure 1</ref> and thus are not shown
+    here.</p>
+    <p><figure>
+      <head>Figure 1: Overall Classification results</head>
+      <graphic url="figures/Fig1.png" xml:id="fig-01" />
+      <figDesc>fig:</figDesc>
+    </figure></p>
+    <p><ref target="#fig-02">Figure 2</ref> shows the F1-macro score
+    distribution from 10 fold cross-validation for classification of the
+    French novel segments of the 1980s-dataset. The setting of
+    <formula notation="TeX">N</formula> varies from 10 to 5000. The
+    baseline is visualized as a green line in the plot. It corresponds
+    to the average of the classification results based on
+    <hi rendition="simple:italic">N * 8</hi> random words, resampled
+    1000 times.</p>
+    <ab type='codeblock python'>
+# === Imports
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from os.path import join
+
+# === Functions
+
+def load_resultsdata(): 
+    resultsfile = join(&quot;data&quot;, 
+        &quot;classification_results_fra_80s.csv&quot;)
+    with open(resultsfile, &quot;r&quot;, encoding=&quot;utf8&quot;) as infile:
+        resultsdata = pd.read_csv(infile, sep='\t')
+        resultsdata = resultsdata.loc[resultsdata['classifier'] == 'MultinomialNB']
+        resultsdata = resultsdata.loc[resultsdata['measure'] != 'KL_Divergence']
+        resultsdata = resultsdata.sort_values(by=['f1_macro_mean'])
+    return resultsdata
+
+def load_randomdata(): 
+    randomfile = join(&quot;data&quot;, 
+        &quot;random_words_classification_results_fra_80s.csv&quot;)
+    with open(randomfile, &quot;r&quot;, encoding=&quot;utf8&quot;) as infile: 
+        randomdata = pd.read_csv(randomfile, sep='\t')
+        randomdata = randomdata.loc[randomdata['classifier'] == 'MultinomialNB']
+    return randomdata
+
+def visualize_classification(): 
+    resultsdata = load_resultsdata()
+    randomdata = load_randomdata()
+    order = ['RRF', 'χ2', 'LLR', 'Welch', 'Wilcoxon', 'TF-IDF','Eta', 'Zeta_orig', 'Zeta_log']
+    sns.set(font_scale=2)
+    sns.set_style(&quot;whitegrid&quot;)
+    f, ax = plt.subplots(figsize = (8,16))
+    sns.pointplot(
+        y=&quot;N&quot;, x=&quot;F1_macro_mean&quot;, data=randomdata, 
+        orient='h', color='green')
+    g = sns.boxplot(
+        y='N', x='F1', data=resultsdata, hue='measure', 
+        orient='h', showfliers=True, palette=&quot;colorblind&quot;, 
+        hue_order = order)
+    g.legend(title='measure', loc='lower center', 
+        bbox_to_anchor=(0.5, -0.22), ncol=3)
+    ax.invert_yaxis()
+    ax.set_title('F1_distributions_fra_90s')
+    ax.set(xlim=(0, 1.02))
+    plt.show()
+
+visualize_classification()
+</ab>
+    <p><figure>
+      <head>Figure 2: Classification results for ELTeC-1980s</head>
+      <graphic url="testing-quarto_files/figure-tei/fig-02-output-1.png" xml:id="fig-02" />
+      <figDesc>fig:</figDesc>
+    </figure></p>
+  </div>
+</div>
+<div type="level1" xml:id="sec-05">
+  <head>5. Multilingual Setting</head>
+  <p></p>
+</div>
+<div type="level1" xml:id="sec-06">
+  <head>6. Conclusion</head>
+  <p></p>
+</div>
+<div type="level1" xml:id="references">
+  <head>7. References</head>
+  <p xml:id="ref-burnard_search_2021">Burnard, Lou, Christof Schöch, and
+  Carolin Odebrecht. 2021. “In Search of Comity: TEI for Distant
+  Reading.” <hi rendition="simple:italic">Journal of the Text Encoding
+  Initiative</hi>, no. 14.
+  <ref target="https://doi.org/10.4000/jtei.3500">https://doi.org/10.4000/jtei.3500</ref>.</p>
+  <p xml:id="ref-diez_openintro_2019">Diez, David, Mine
+  Cetinkaya-Rundel, and Christopher D. Barr. 2019.
+  <hi rendition="simple:italic">OpenIntro Statistics</hi>. 4th ed.
+  OpenIntro.
+  <ref target="https://www.openintro.org/book/os/">https://www.openintro.org/book/os/</ref>.</p>
+  <p xml:id="ref-klimek_vergleich_2015">Klimek, Sonja, and Ralph Müller.
+  2015. “Vergleich Als Methode? Zur Empirisierung Eines Philologischen
+  Verfahrens Im Zeitalter Der Digital Humanities.”
+  <hi rendition="simple:italic">Journal of Literary Theory</hi>, no. 9,
+  1.
+  <ref target="https://doi.org/10.1515/jlt-2015-0004">https://doi.org/10.1515/jlt-2015-0004</ref>.</p>
+  <p xml:id="ref-organisciak_research_2021">Organisciak, Peter, and J.
+  Stephen Downie. 2021. “Research Access to in-Copyright Texts in the
+  Humanities.” In <hi rendition="simple:italic">Information and
+  Knowledge Organisation in Digital Humanities</hi>, 157–77. Routledge.
+  <ref target="https://doi.org/10.4324/9781003131816-8">https://doi.org/10.4324/9781003131816-8</ref>.</p>
+  <p xml:id="ref-schoch_abgeleitete_2020">Schöch, Christof, Frédéric
+  Döhl, Achim Rettinger, Evelyn Gius, Peer Trilcke, Peter Leinen, Fotis
+  Jannidis, Maria Hinzmann, and Jörg Röpke. 2020. “Abgeleitete
+  Textformate: Text Und Data Mining Mit Urheberrechtlich Geschützten
+  Textbeständen.” <hi rendition="simple:italic">Zeitschrift Für Digitale
+  Geisteswissenschaften</hi>.
+  <ref target="https://doi.org/10.17175/2020_006">https://doi.org/10.17175/2020_006</ref>.</p>
+  <p xml:id="ref-schoch_creating_2021">Schöch, Christof, Roxana Patras,
+  Tomaž Erjavec, and Diana Santos. 2021. “Creating the European Literary
+  Text Collection (ELTeC): Challenges and Perspectives.”
+  <hi rendition="simple:italic">Modern Languages Open</hi>, no. 1: 1–19.
+  <ref target="https://doi.org/10.3828/mlo.v0i0.364">https://doi.org/10.3828/mlo.v0i0.364</ref>.</p>
+  <p xml:id="ref-schroter_keyness_2021">Schröter, Julian, Keli Du, Julia
+  Dudar, Cora Rok, and Christof Schöch. 2021. “From Keyness to
+  Distinctiveness – Triangulation and Evaluation in Computational
+  Literary Studies.” <hi rendition="simple:italic">Journal of Literary
+  Theory (JLT)</hi>, no. 9, 1–2: 81–108.
+  <ref target="https://doi.org/10.1515/jlt-2021-2011">https://doi.org/10.1515/jlt-2021-2011</ref>.</p>
+  <p xml:id="ref-tufte_envisioning_1990">Tufte, Edward R. 1990.
+  <hi rendition="simple:italic">Envisioning Information</hi>. Graphics
+  Press.</p>
+</div>
+<div type="level1" xml:id="appendix-a-general-remarks-about-this-test">
+  <head>8. Appendix A: General remarks about this test</head>
+  <div type="level2" xml:id="notes">
+    <head>8.1 Notes</head>
+    <list type="unordered">
+      <item>
+        <p>Impressive overall!</p>
+      </item>
+      <item>
+        <p>The mode of testing is installing Quarto locally and using VS
+        Code to edit files. How this would work as a collaborative,
+        online editor is another question. Github integration would
+        clearly be an option, but then it is not concurrent editing, but
+        push/pull to a repo: doable, but with its own issues.</p>
+      </item>
+      <item>
+        <p>[SOLVED] How can I place the appendices after the references?
+        =&gt; Use the refs attribute (see above).</p>
+      </item>
+      <item>
+        <p>Many more options for metadata and formatting in different
+        output formats.</p>
+      </item>
+      <item>
+        <p>Der <quote>folded code</quote> im HTML-Beispiel ist besonders
+        cool (geht im PDF naturgemäß nicht). Noch coller ist allerdings
+        die Notebook-Version, die dann auf einem Localhost-Port
+        läuft.</p>
+      </item>
+    </list>
+  </div>
+  <div type="level2" xml:id="the-equations-example">
+    <head>8.2 The equations example</head>
+    <p>Einstein’s theory of special relatively that expresses the
+    equivalence of mass and energy:</p>
+    <p><formula notation="TeX">E = mc^{2}</formula></p>
+  </div>
+</div>
+</body>
+</text>
+</TEI>
